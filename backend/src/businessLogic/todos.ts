@@ -8,8 +8,8 @@ import { TodoDbAccess } from '../dataLayer/todosDbAccess'
 
 const todoDbAccess = new TodoDbAccess()
 
-export async function getAllTodos(): Promise<TodoItem[]> {
-  return todoDbAccess.getAllTodos()
+export async function getAllTodos(userId: string): Promise<TodoItem[]> {
+  return todoDbAccess.getAllTodos(userId)
 }
 
 export async function createTodo(createTodoReq: CreateTodoRequest, userId: string): Promise<TodoItem> {
@@ -23,19 +23,19 @@ export async function createTodo(createTodoReq: CreateTodoRequest, userId: strin
   })    
 }
 
-export async function updateTodo(updateTodoReq: UpdateTodoRequest, todoId: string) {
+export async function updateTodo(updateTodoReq: UpdateTodoRequest, todoId: string, userId: string) {
   await todoDbAccess.updateTodo({
     name: updateTodoReq.name,
     dueDate: updateTodoReq.dueDate,
     done: updateTodoReq.done
-  }, todoId)    
+  }, todoId, userId)    
 }
 
-export async function deleteTodo(todoId: string) {
-  await todoDbAccess.deleteTodo(todoId)
+export async function deleteTodo(todoId: string, userId: string) {
+  await todoDbAccess.deleteTodo(todoId, userId)
 }
 
-export async function generateUploadUrl(todoId: string): Promise<string> {
-  const url = await todoDbAccess.generateUploadUrl(todoId)
+export async function generateUploadUrl(todoId: string, userId: string): Promise<string> {
+  const url = await todoDbAccess.generateUploadUrl(todoId, userId)
   return url
 }

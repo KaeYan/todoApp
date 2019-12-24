@@ -4,10 +4,12 @@ import { getAllTodos } from '../../businessLogic/todos'
 // import * as AWS from 'aws-sdk'
 // const docClient = new AWS.DynamoDB.DocumentClient()
 // const todoTable = process.env.TODOS_TABLE
+import { getUserId } from '../utils'
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  console.log('Processing event', event)
-  const items = await getAllTodos()
+  const userId = getUserId(event)
+  const items = await getAllTodos(userId)
+  
   return {
     statusCode: 200,
     headers: {

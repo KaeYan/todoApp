@@ -37,7 +37,7 @@ cf3GDMnqGW1+tRo=
 // const client = jwks({
 //   cache: true,
 //   jwksUri: jwksUrl
-// });
+// })
 
 export const handler = async (event: CustomAuthorizerEvent): Promise<CustomAuthorizerResult> => {
   logger.info('Authorizing a user', event.authorizationToken)
@@ -81,14 +81,9 @@ async function verifyToken(authHeader: string): Promise<JwtPayload> {
   const token = getToken(authHeader)
   // const jwt: Jwt = decode(token, { complete: true }) as Jwt
   // var keys
-  // logger.info("Calling the getSigningKey function")
-  // client.getSigningKey(jwt.header.kid, (err, key: jwks.SigningKey) => {
-  //   logger.info("In the getSigningKey callback function")
+  // client.getSigningKey(jwt.header.kid, (_, key: jwks.SigningKey) => {
   //   keys = (key as jwks.CertSigningKey).publicKey || (key as jwks.RsaSigningKey).rsaPublicKey
-  //   logger.info(err)
-  //   logger.info(keys)
   // })
-  // logger.info("After Calling the getSigningKey function")
   // TODO: Implement token verification
   // You should implement it similarly to how it was implemented for the exercise for the lesson 5
   // You can read more about how to do this here: https://auth0.com/blog/navigating-rs256-and-jwks/

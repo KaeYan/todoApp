@@ -1,6 +1,7 @@
 import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
 import { generateUploadUrl } from '../../businessLogic/todos'
+import { getUserId } from '../utils'
 // import * as AWS from 'aws-sdk'
 // const docClient = new AWS.DynamoDB.DocumentClient()
 // const todoTable = process.env.TODOS_TABLE
@@ -11,8 +12,9 @@ import { generateUploadUrl } from '../../businessLogic/todos'
 // }) 
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  const userId = getUserId(event)
   const todoId = event.pathParameters.todoId
-  const uploadurl = await generateUploadUrl(todoId)
+  const uploadurl = await generateUploadUrl(todoId, userId)
   return {
     statusCode: 200,
     headers: {

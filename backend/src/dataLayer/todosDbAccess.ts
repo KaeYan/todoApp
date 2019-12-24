@@ -15,11 +15,16 @@ export class TodoDbAccess {
         private readonly urlExpiration = process.env.SIGNED_URL_EXPIRATION) {
     }
 
-    async getAllTodos(): Promise<TodoItem[]> {
+    async getAllTodos(userId: string): Promise<TodoItem[]> {
         console.log('Getting all todos')
 
-        const result = await this.docClient.scan({
-            TableName: this.todosTable
+        const result = await this.docClient.query({
+            TableName: this.todosTable,
+            KeyConditionExpression: 'userId = :userId',
+            ExpressionAttributeValues: {
+                ':userId': userId
+            },
+            ScanIndexForward: false
         }).promise()
 
         const items = result.Items
@@ -35,11 +40,12 @@ export class TodoDbAccess {
         return todo
     }
 
-    async updateTodo(todoUpdate: TodoUpdate, todoId: string): Promise<TodoUpdate> {
+    async updateTodo(todoUpdate: TodoUpdate, todoId: string, userId: string): Promise<TodoUpdate> {
         await this.docClient.update({
             TableName: this.todosTable,
             Key: {
-                todoId: todoId
+                userId: userId,
+                todoId: todoId    
             },
             UpdateExpression: "set dueDate=:dd, done=:d, #namee=:n",
             ExpressionAttributeNames: {
@@ -55,16 +61,17 @@ export class TodoDbAccess {
         return todoUpdate
     }
 
-    async deleteTodo(todoId: string) {
+    async deleteTodo(todoId: string, userId: string) {
         await this.docClient.delete({
             TableName: this.todosTable,
             Key: {
+                userId: userId,
                 todoId: todoId
             }
         }).promise()
     }
 
-    async generateUploadUrl(todoId: string): Promise<string> {
+    async generateUploadUrl(todoId: string, userId: string): Promise<string> {
         const uploadurl = this.s3.getSignedUrl('putObject', {
             Bucket: this.bucketName,
             Key: todoId,
@@ -74,6 +81,7 @@ export class TodoDbAccess {
         await this.docClient.update({
             TableName: this.todosTable,
             Key: {
+                userId: userId,
                 todoId: todoId
             },
             UpdateExpression: "set attachmentUrl=:au",
